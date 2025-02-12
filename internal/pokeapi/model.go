@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -19,8 +20,13 @@ type LocationArea struct {
 	Results  []Result `json:"results"`
 }
 
-func GetLocationAreaData() (LocationArea, error) {
-	res, err := http.Get("https://pokeapi.co/api/v2/location-area")
+type Config struct {
+	Next     string
+	Previous string
+}
+
+func GetLocationArea(url string) (LocationArea, error) {
+	res, err := http.Get(url)
 	if err != nil {
 		return LocationArea{}, err
 	}
@@ -41,4 +47,13 @@ func GetLocationAreaData() (LocationArea, error) {
 	}
 
 	return locationArea, nil
+}
+
+func DisplayLocationAreas(areas LocationArea, config *Config) {
+	config.Next = areas.Next
+	config.Previous = areas.Previous
+
+	for _, area := range areas.Results {
+		fmt.Println(area.Name)
+	}
 }
